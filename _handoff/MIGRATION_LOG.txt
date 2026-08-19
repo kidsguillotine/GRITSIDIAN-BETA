@@ -1,0 +1,6 @@
+Claudian Starter: Migration Log
+One line per confirmed structural operation (move/trash/extract/merge).
+Format: YYYY-MM-DD: what happened (source -> dest).
+
+2026-08-19: removed empty duplicate folder 00_inbox/SCRAPS (case-only collision with 00_inbox/scraps; unsafe on Windows and macOS). No files affected.
+2026-08-19: DOC COLLAPSE. Removed 10 docs (1176 lines) from 99_system and .claude after measuring staleness and script dependency. Deleted: MODEL_ROUTING, AUTOMATION_ROUTING, SYSTEM_CONSTANTS (described absent infrastructure); vo-system-prompt (Vault Operator caused the G03 folder-invention incident and is not shipped); FORMAT_CONTRACT_INVENTORY (merged into DOC_STANDARD section 8); SUBAGENT_SPECS + CLAUDE_TOOL_MANIFEST (merged into AGENTS_AND_TOOLS); INTEGRITY_LAYER_SPEC + REBUILD_MOCS_SPEC (merged into SCRIPT_SPECS); DOMAIN_HANDOFF_TEMPLATE (orphan). Extracted first: routing ladder to TOKEN_DISCIPLINE, format-contract table and shared-literals rule to DOC_STANDARD. 99_system now 1159 lines across 13 docs, down from 2338 across 20. Recoverable at commit 7721b48.

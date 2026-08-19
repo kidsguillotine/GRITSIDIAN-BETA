@@ -1,0 +1,95 @@
+# vocab.yaml: single source of truth for the vault tag vocabulary.
+# PROTOTYPE. Small on purpose. Add your own areas and topics as you use the vault.
+#
+# RULES
+#   - This file is the source of truth. classify.py and validate_frontmatter.py
+#     both load it. Never edit the tag vocabulary inside the scripts.
+#   - TAG_SCHEMA.md is GENERATED from this file. Never hand-edit TAG_SCHEMA.md.
+#     Regenerate: python3 .claudian/scripts/generate_tag_schema.py
+#   - New domain: add to areas: AND vocabulary.area: at the same time.
+#   - A tag used fewer than 5 times belongs in candidates:, not vocabulary:.
+
+settings:
+  evidence_floor: 1
+  auto_pick_primary_for_multi_domain: true
+  abstain_status: '#status/unsorted'
+
+# AREA DOMAINS
+# Loaded by classify.py. Each entry has the tag to assign plus keyword anchors.
+# An anchor is plain evidence: if the word is not in the note or filename, the
+# tag is not justified (see CLAUDE.md, never assign an unjustified tag).
+areas:
+  personal:
+    tag: '#area/personal'
+    anchors: [home, family, health, appointment, personal]
+  career:
+    tag: '#area/career'
+    anchors: [resume, job, interview, employer, career, work]
+  technical:
+    tag: '#area/technical'
+    anchors: [code, script, server, api, config, bug, technical]
+  creative:
+    tag: '#area/creative'
+    anchors: [writing, music, art, draft, lyrics, creative]
+  admin:
+    tag: '#area/admin'
+    anchors: [invoice, receipt, insurance, license, renewal, admin]
+  general:
+    tag: '#area/general'
+    anchors: [general, misc, log, daily]
+
+vocabulary:
+  area:
+    - personal
+    - career
+    - technical
+    - creative
+    - admin
+    - general
+  type:
+    - note
+    - task
+    - reference
+    - journal
+    - project
+    - capture
+  status:
+    - unsorted
+    - active
+    - waiting
+    - done
+    - archived
+  priority:
+    - now
+    - next
+    - later
+  wip_limits:
+    active: 5
+
+# Filename and content patterns that imply a type.
+type_patterns:
+  task: '(?i)(todo|task|checklist)'
+  journal: '(?i)(journal|diary|daily)'
+  reference: '(?i)(reference|cheatsheet|manual|spec)'
+
+default_type: note
+
+# Old or misspelled tag on the left, correct tag on the right.
+tag_aliases:
+  '#area/work': '#area/career'
+  '#area/tech': '#area/technical'
+
+operational:
+  review_folder: 70_manual_review
+  inbox_folder: 00_inbox
+
+# TOPICS: narrower than an area. Only add a topic you actually reuse.
+topics:
+  setup:
+    description: Installing or configuring this vault and its tools.
+  backup:
+    description: Git snapshots, remotes, and recovery.
+
+candidates: {}
+candidate_promotion_threshold: 5
+candidate_expiry_days: 90

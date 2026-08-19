@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+# pre-commit: enforce CLAUDE.md sensitive-file policy mechanically
+#
+# Blocks any commit that stages a file matching the sensitive-pattern set
+# (CRM, password, recovery, backup, ancestry, finance, paystub, Offer_Letter,
+# Employment_Agreement, Direct_Deposit, I-9, FormI9, W-2, W-4, SSN).
+#
+# Also scans staged content for high-confidence secret patterns:
+#   OpenAI keys (sk-...), Google API keys (AIza...), AWS access keys (AKIA...),
+#   PEM private key headers.
+#
+# Bypass with `--no-verify` ONLY if the user has explicitly authorized it.
+# Per CLAUDE.md, agents must never use --no-verify without explicit user OK.
+
+set -uo pipefail
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+SENSITIVE_PATTERNS='(CRM|password|passwd|recovery|backup|ancestry|finance|paystub|Offer_Letter|Employment_Agreement|Direct_Deposit|I-9|FormI9|W-2|W-4|SSN|credentials)'
+EXIT=0
+
+# -- PATH WHITELIST: known false positives -----------------------------------
+# These paths match a sensitive keyword but are structural/navigation files,
+# not sensitive data. Whitelisted after human review.
+WHITELIST_PATTERNS='^(_MOCs/|_handoff/MIGRATION_LOG|99_system/|_handoff/TAG_SCHEMA|_handoff/VAULT_STATE|30_career/crm/|10_active/task-review-)'
+
+# -- 1. Filename check --------------------------------------------------------
+# Get staged file paths (added, copied, modified, renamed)
+STAGED_PATHS=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if [[ -n "$STAGED_PATHS" ]]; then
+  MATCHED=$(echo "$STAGED_PATHS" | grep -iE "$SENSITIVE_PATTERNS" | grep -vE "$WHITELIST_PATTERNS" || true)
+  if [[ -n "$MATCHED" ]]; then
+    echo "----------------------------------------------------------------------"
+    echo "  PRE-COMMIT BLOCK: sensitive-pattern filename match"
+    echo "----------------------------------------------------------------------"
+    echo "  The following staged paths match the CLAUDE.md sensitive-pattern set:"
+    echo ""
+    echo "$MATCHED" | sed 's/^/    /'
+    echo ""
+    echo "  Per CLAUDE.md hard prohibition, these must NOT be committed."
+    echo "  Route them to your sensitive store (outside git; see"
+    echo "  wiki/Sensitivity and Security), then add the pattern to .gitignore."
+    echo ""
+    echo "  If a match is a false positive (e.g. file named 'backup_policy.md'),"
+    echo "  unstage with:  git restore --staged <path>"
+    echo "  and re-commit. If the match is genuinely fine to commit, bypass with"
+    echo "  --no-verify ONLY after the user has explicitly authorized it."
+    echo "----------------------------------------------------------------------"
+    EXIT=1
+  fi
+fi
+
+# -- 2. Content secret-pattern scan -------------------------------------------
+# Scan staged content (not working tree) for high-confidence secret tokens.
+# UUID-near-token-label pattern added 2026-06-22 (IH-3 L-8 / OD-24) to catch
+# G13-class leaks (VO MCP token committed in plaintext as 'token: <uuid>').
+# Word-boundary anchor added 2026-07-05: previous unanchored 'sk-' matched
+# words like 'disk-state', 'flask-based', etc.: the erosion_20260627_211129.md
+# false-positive on 2026-07-03 was 'sk-state ≠ runtime state' matched as if
+# it were an sk- prefixed key. Same anchor added defensively to AIza / AKIA /
+# xox prefixes (unlikely to false-positive but no downside).
+SECRET_PATTERNS='(\bsk-[A-Za-z0-9_-]{20,}|\bAIza[0-9A-Za-z_-]{30,}|\bAKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|\bxox[baprs]-[A-Za-z0-9-]{10,}|[Tt][Oo][Kk][Ee][Nn][^a-zA-Z0-9]{1,8}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[Ss][Ee][Cc][Rr][Ee][Tt][^a-zA-Z0-9]{1,8}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[Aa][Pp][Ii][_-]?[Kk][Ee][Yy][^a-zA-Z0-9]{1,8}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})'
+
+# ^\+[^+] matches actual added lines; skips +++ filename headers in diff output
+SECRET_HITS=$(git diff --cached -U0 | grep -E "^\+[^+]" | grep -E "$SECRET_PATTERNS" || true)
+
+if [[ -n "$SECRET_HITS" ]]; then
+  echo "----------------------------------------------------------------------"
+  echo "  PRE-COMMIT BLOCK: high-confidence secret pattern in staged content"
+  echo "----------------------------------------------------------------------"
+  echo "  Detected secret-shaped tokens in your staged diff. NOT showing the"
+  echo "  matches here to avoid further chat/log exposure. Run:"
+  echo ""
+  echo "    git diff --cached | grep -nE '$SECRET_PATTERNS'"
+  echo ""
+  echo "  in your terminal to inspect. Remove the secrets and re-stage."
+  echo "----------------------------------------------------------------------"
+  EXIT=1
+fi
+
+# -- 3. Wikilink extension lint (G44 / R-WIKILINK-NOEXT) ----------------------
+# Rejects staged additions that introduce `[[*.md]]` wikilinks. Image embeds
+# (`![[X.png]]`, `![[X.jpg]]`, etc.) are exempt: they're media references and
+# the renderer expects extensions there.
+#
+# Matches the corruption patterns from G44:
+#   [[X.md]]            single extension
+#   [[X.md.md]]         compound (agents re-applied the rule)
+#   [[X.md_<date>.md]]  date-suffixed chain (third-generation)
+#
+# Scope: only added lines in staged .md files. Removed lines (-) are how
+# repairs land, so we never block deletions.
+#
+# OD-44 Sub-item B (2026-06-27): rescoped from file-whitelist to content-aware
+# filter. Primary gate now skips matches inside fenced code blocks (``` ... ```)
+# and inline backticks (`...`) regardless of file. File whitelist retained as
+# a thin safety net for auto-generated logs that may carry the pattern in prose
+# without backticks; expected to shrink as files migrate to backtick-wrapped
+# pattern examples. Real `[[X.md]]` in prose is ALWAYS blocked.
+WIKILINK_BAD_RE='\[\[[^]!|]*\.md(\.md)*(\|[^]]*)?\]\]'
+
+# Slim file whitelist: auto-generated / historical-record files where pattern
+# examples may legitimately appear in prose. Trim entries here as the
+# referenced files get content-fixed to wrap examples in backticks. DO NOT add
+# regular content files to this list: wrap examples in backticks instead.
+WIKILINK_WHITELIST='^(_handoff/MIGRATION_LOG\.txt|_handoff/SESSION_HANDOFF_CURRENT\.md|_handoff/handoff_history/.*|_handoff/SESSION_BOOT\.md|_handoff/GOTCHAS\.md|_handoff/archive/.*|CLAUDE\.md|_handoff/erosion_audit/.*|99_system/obsilo-memory/knowledge\.md|_handoff/OPEN_DECISIONS\.md|_handoff/IMPORTED_HANDOFFS\.md)$'
+WIKILINK_MD_STAGED=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.md$' | grep -vE "$WIKILINK_WHITELIST" || true)
+
+if [[ -n "$WIKILINK_MD_STAGED" ]]; then
+  # Content-aware filter (-U999 for fence-context). awk state machine tracks
+  # fenced code block (``` open/close) across the diff window so additions
+  # inside a fence are skipped even when the fence was opened in unchanged
+  # context. Strips inline `...` backtick spans before pattern check.
+  #
+  # Pipeline:
+  #   1. git diff -U999 (wide context, sees fence open/close around changes)
+  #   2. awk: filter to + lines outside fenced/backtick code, strip leading +
+  #   3. grep: match the bad wikilink pattern, with original line numbers
+  WIKILINK_HITS=$(git diff --cached -U999 -- $WIKILINK_MD_STAGED \
+    | awk '
+        BEGIN { in_fence = 0 }
+        /^\+\+\+/ || /^---/ { in_fence = 0; next }       # diff file headers: reset fence state per-file (no leak across boundary)
+        /^@@/               { next }       # hunk headers
+        {
+          marker = substr($0, 1, 1)
+          content = substr($0, 2)
+          # Skip removed lines outright (repairs land here)
+          if (marker == "-") next
+          # Track fenced code block on context AND addition lines
+          if (content ~ /^[ \t]*(```|~~~)/) {
+            in_fence = !in_fence
+            next
+          }
+          if (in_fence) next               # inside fence: exempt
+          if (marker != "+") next          # context-only line, already tracked
+          # Strip inline backtick spans (single-tick pairs; common case)
+          gsub(/`[^`]*`/, "", content)
+          print content
+        }
+      ' \
+    | grep -nE "$WIKILINK_BAD_RE" || true)
+  if [[ -n "$WIKILINK_HITS" ]]; then
+    echo "----------------------------------------------------------------------"
+    echo "  PRE-COMMIT BLOCK: wikilink with .md extension (G44 / R-WIKILINK-NOEXT)"
+    echo "----------------------------------------------------------------------"
+    echo "  Detected staged lines that introduce \`[[X.md]]\` wikilinks in prose"
+    echo "  (matches inside backticks / fenced code blocks are exempt). The"
+    echo "  Obsidian / Claudian renderer treats the target as a basename lookup;"
+    echo "  \`X.md\` is not a basename and resolution fails. Re-applying agents"
+    echo "  compound the corruption (\`X.md.md\`, \`X.md_<date>.md\`)."
+    echo ""
+    echo "  Offending additions (line:content):"
+    echo ""
+    echo "$WIKILINK_HITS" | sed 's/^/    /' | head -20
+    echo ""
+    echo "  Fix options:"
+    echo "    A. Rewrite as \`[[folder/note]]\` or \`[[note]]\` (no .md)."
+    echo "    B. If discussing the pattern as documentation, wrap in backticks:"
+    echo "       'see \`[[X.md]]\` for the corrupt form': the hook will exempt it."
+    echo "    C. For an autofix dry-run on the affected files:"
+    echo "       python3 .claudian/scripts/check_links.py --fix --scope <file ...>"
+    echo ""
+    echo "  Image embeds (\`![[X.png]]\`) are always exempt: they're not wikilinks."
+    echo "----------------------------------------------------------------------"
+    EXIT=1
+  fi
+fi
+
+exit $EXIT

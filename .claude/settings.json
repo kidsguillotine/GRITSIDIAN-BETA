@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash __VAULT_ROOT__/.claudian/scripts/rm-guard.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash __VAULT_ROOT__/.claudian/scripts/generate_handoff.sh --quick"
+          }
+        ]
+      }
+    ]
+  }
+}
