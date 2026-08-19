@@ -57,7 +57,7 @@
 #   session_close.sh : called first; exit 1 blocks the close sequence
 #   hourly_snapshot.sh: called with --soft; output logged, never blocks push
 #
-# Spec: 99_system/INTEGRITY_LAYER_SPEC.md §5 (C1-C6), §7 (sequencing)
+# Spec: 99_system/SCRIPT_SPECS.md (what each check means)
 # Added: 2026-06-25 (C1+C3+C4); C2+C6 added 2026-06-25 (OD-34+OD-35)
 
 set -uo pipefail
@@ -442,7 +442,7 @@ od_residue_check() {
 # -- C8: Format contract linter -----------------------------------------------
 # Verifies that HIGH-priority block markers (format contracts) are intact in
 # docs consumed by scripts. A missing marker silently breaks PENDING counting.
-# Source: FORMAT_CONTRACT_INVENTORY.md §HIGH-priority contracts. Non-blocking.
+# Source: 99_system/DOC_STANDARD.md section 8 (format contracts). Non-blocking.
 c8_check() {
   local issues=0
 

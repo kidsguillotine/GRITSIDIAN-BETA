@@ -31,24 +31,21 @@ DOCS=(
   "_handoff/MIGRATION_LOG.txt"
   # Architecture
   "99_system/MASTER_PLAN_v2.md"
-  "99_system/PHASE_STATE.md"
   "99_system/NEXT_ACTIONS.md"
   "99_system/AUTOMATION_BACKLOG.md"
   "99_system/VAULT_FUNCTION_PLAN.md"
   # System index docs
   "99_system/SYSTEM_DOC_MAP.md"
+  "99_system/AGENTS_AND_TOOLS.md"
+  "99_system/SCRIPT_SPECS.md"
   "99_system/SCRIPT_REGISTRY.md"
   "99_system/SYMLINK_REGISTRY.md"
   # Standards / contracts
   "99_system/DOC_STANDARD.md"
-  "99_system/SYSTEM_CONSTANTS.md"
-  "99_system/FORMAT_CONTRACT_INVENTORY.md"
-  "99_system/INTEGRITY_LAYER_SPEC.md"
   # Safety
   "_handoff/vip_next_session/SECURITY_FIRES.md"
   # Tools
   "99_system/VO_TOOL_MANIFEST.md"
-  "99_system/AUTOMATION_ROUTING.md"
   "99_system/CROSS_REPO_SCRIPTS.md"
 )
 

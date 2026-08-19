@@ -4,8 +4,7 @@
 # OD-47 option B rewrite (2026-07-01). This generator no longer embeds
 # canonical content. It reads templates from .claudian/config/vo_memory_template.*.md
 # and resolves VO_MEMORY_RESOLVE markers by extracting sections from canonical
-# docs (CLAUDE.md, VO_TOOL_MANIFEST.md, SYSTEM_CONSTANTS.md, SYMLINK_REGISTRY.md,
-# PENDING_WORK.md, MODEL_ROUTING.md).
+# docs (CLAUDE.md, SYMLINK_REGISTRY.md, PENDING_WORK.md).
 #
 # Spec: _handoff/vip_next_session/GEN_VO_MEMORY_REWRITE_SPEC.md
 #

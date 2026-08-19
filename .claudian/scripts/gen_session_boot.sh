@@ -408,7 +408,7 @@ printf '%s' "$TS" > "$BOOT_TS_FILE"
 {
 cat << HEADER
 ---
-title: Session Boot: fast-load orientation
+title: "Session Boot: fast-load orientation"
 generated: ${TS}
 meta_status: active
 purpose: >

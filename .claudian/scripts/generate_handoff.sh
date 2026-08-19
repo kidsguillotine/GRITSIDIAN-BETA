@@ -167,7 +167,7 @@ PENDING_IMP_COUNT=$(pending_import_count)
 {
 cat << HEADER
 ---
-title: Session Handoff: CURRENT
+title: "Session Handoff: CURRENT"
 generated: ${TIMESTAMP}
 purpose: Single file new agents read FIRST. Generated from live system state.
 next_read: _handoff/OPEN_DECISIONS.md (PENDING block), _handoff/IMPORTED_HANDOFFS.md (PENDING REVIEW block), then MASTER_PLAN_v2.md §4 & §11

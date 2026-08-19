@@ -71,15 +71,19 @@ Rules of thumb:
   NEXT_ACTIONS and let session close move it down.
 - PHASE_STATE is optional. Delete it if you do not run phased work.
 
-### Can these be collapsed?
+### How this was resolved (2026-08-19)
 
-Yes, and you should if the split feels like overhead. For a small vault, two
-files are enough: `PROJECT_TODO.md` for building the system and
-`_handoff/NEXT_ACTIONS.md` for everything else. Delete PHASE_STATE and fold
-PENDING_WORK into a "Later" heading inside NEXT_ACTIONS.
+Two files carry the work, and two exist only for the scripts.
 
-Keep all four only when the volume actually justifies it. Adding a tracker is
-cheap; reading four trackers every session is not. See
+- WRITE HERE: `_handoff/NEXT_ACTIONS.md` for normal work, and `PROJECT_TODO.md`
+  for work on this system.
+- KEPT EMPTY: `_handoff/PENDING_WORK.md` and `_handoff/PHASE_STATE.md`. Five
+  scripts parse them, so deleting them turns passing checks into skipped ones,
+  which is a silent gap rather than a clean result. Empty is the correct state.
+
+The reasoning matters more than the outcome: a doc-count target is not worth
+destabilizing working code. Reducing what a human must READ is the actual goal,
+and that is achieved by making the two extra files pointers. See
 `99_system/DESIGN_BY_LIMITATION.md`.
 
 ## Group 3: record (all HUMAN, most append-only)

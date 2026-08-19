@@ -79,6 +79,34 @@ stay consistent. This satisfies the CLAUDE.md ban with no exceptions.
 Rule: never rename or reformat a parse point without updating the consuming
 script in the same commit.
 
+### Which script reads which file
+
+Merged from FORMAT_CONTRACT_INVENTORY.md (2026-08-19). Check this before you
+change the shape of any file listed here.
+
+| File | Read by | What it parses |
+|---|---|---|
+| `OPEN_DECISIONS.md` | `gen_session_boot.sh`, `generate_handoff.sh`, `validate_system.sh` | Pending count, between the block markers |
+| `IMPORTED_HANDOFFS.md` | `gen_session_boot.sh`, `generate_handoff.sh` | Pending-review count |
+| `SECURITY_FIRES.md` | `gen_session_boot.sh` | Rows whose status cell is `OPEN` |
+| `GOTCHAS.md` | `gen_session_boot.sh` | `### GN:` headers, for the count and index |
+| `MIGRATION_LOG.txt` | `gen_session_boot.sh` | Date-header lines, most recent first |
+| `SCRIPT_REGISTRY.md` | `validate_system.sh` (C4) | The script table, diffed against the folder |
+| `SYSTEM_DOC_MAP.md` | `validate_system.sh` (C1, C2) | Doc rows, checked for dangling and unmapped |
+| `PENDING_WORK.md` | `generate_handoff.sh`, `gen_vo_memory.sh` | The immediate/security block |
+| `PHASE_STATE.md` | `validate_system.sh` (C11), `gen_vo_memory.sh` | Phase rows |
+| `vocab.yaml` | `classify.py`, `generate_tag_schema.py`, `validate_frontmatter.py` | The whole tag vocabulary |
+
+A file above is a machine interface as well as a document. Treat a change to its
+shape like a change to a function signature.
+
+## 9. Shared literals
+
+Never hardcode a value that more than one script needs. Ports, paths, thresholds,
+and folder names go in `.claudian/scripts/constants.sh` and are sourced from
+there. Two scripts with the same number written twice will drift, and nothing will
+tell you which one is right.
+
 ## 5. Folder placement
 
 | Folder | Contents |

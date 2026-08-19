@@ -80,3 +80,25 @@ on live data: the apply trigger stays with the user.
 3. Every apply is reversible (undo script) and reconciled (counts must match).
 4. Never trade a verification step for tokens. The savings are supposed to come
    from *not re-deriving*, not from *not checking*.
+
+
+---
+
+## The routing ladder (extracted from MODEL_ROUTING.md, 2026-08-19)
+
+Every RECURRING operation is placed at the lowest tier that meets its acceptance
+criteria. Going above the tier needs a one-line logged reason. One-off work is
+exempt: this governs things that repeat.
+
+| Tier | Executor | Cost | Use when |
+|---|---|---|---|
+| 0 | A deterministic script | free | The criteria need no judgment. |
+| 1 | A local model | cheap | Judgment needed, and a wrong answer is cheap to fix. |
+| 2 | A cloud model | costly | Judgment needed, and a wrong answer is expensive. |
+| 3 | A human | slowest | The decision is irreversible or sets policy. |
+
+Most work that feels like it needs tier 2 is really tier 0 with an unclear
+specification. Write the specification and the tier drops.
+
+If you run cloud-only, tiers 0 and 2 are your whole ladder. The principle does
+not change: a script beats a model whenever the criteria are mechanical.

@@ -310,16 +310,13 @@ Load a doc when the work touches its domain. Do not load these at session start.
   the tag vocabulary. Read before any tagging or classification.
 - `99_system/DESIGN_BY_LIMITATION.md`: design discipline, including the YAGNI
   ladder. Read before adding a doc, script, dependency, or abstraction.
-- `99_system/MODEL_ROUTING.md` and `99_system/AUTOMATION_ROUTING.md`: which
-  model or substrate handles which work.
-- `99_system/FORMAT_CONTRACT_INVENTORY.md`: which scripts parse which docs.
-  Read before changing the shape of a parsed file.
-- `99_system/SYSTEM_CONSTANTS.md`: shared literals. Read before hardcoding one.
+- `99_system/AGENTS_AND_TOOLS.md`: what agents exist, which tools each may use,
+  and the rules a subagent inherits.
 - `99_system/SCRIPT_REGISTRY.md`: what each pipeline script does.
-- `99_system/CLAUDE_TOOL_MANIFEST.md`: allowed-tools reference for skills.
-- `99_system/SUBAGENT_SPECS.md`: subagent definitions and their limits.
-- `99_system/INTEGRITY_LAYER_SPEC.md` and `99_system/REBUILD_MOCS_SPEC.md`:
-  specs for validate_system.sh and rebuild_mocs.py.
+- `99_system/SCRIPT_SPECS.md`: how to read validate_system.sh output and when to
+  run rebuild_mocs.py.
+- `99_system/DOC_STANDARD.md` section 8: which script parses which file. Read
+  before changing the shape of a parsed file.
 - `99_system/CAPTURE_QUICKREF.md`: the capture and drain pipeline.
 - `OBSIDIAN_HOTKEYS.md` (vault root): keyboard reference for the human.
 

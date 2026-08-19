@@ -65,7 +65,7 @@ EXCLUDE_FILES = {
     "_handoff/GOTCHAS.md",  # append-only lesson log; documents wikilink corruption with intentional examples
     "_handoff/claudian-migration-decisions-20260628.md",  # historical migration decision log
     "random chat history.md",  # chat history export; full of example/placeholder wikilinks, not navigation
-    "99_system/FORMAT_CONTRACT_INVENTORY.md",  # contains regex patterns like [[:space:]] parsed as false-positive wikilinks
+    "99_system/DOC_STANDARD.md",  # documents the wikilink rule; contains pattern examples
     "_handoff/UNREVIEWED_TRIAGE.md",  # auto-generated; contains raw agent_memory snippets with [[wikilinks]] in record text (not vault navigation)
 }
 

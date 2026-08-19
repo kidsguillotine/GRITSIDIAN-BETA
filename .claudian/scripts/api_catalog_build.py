@@ -58,7 +58,7 @@ NPS, USGS, LoC). Key via `X-Api-Key` header (or `api_key` query param).
 Default 1,000 req/hr; HTTP 429 on exceed, rolling hourly reset; usage in
 `X-RateLimit-Limit` / `X-RateLimit-Remaining` response headers.
 CAUTION: keys are 40-char alphanumeric: matched by NO pattern in the
-canonical secret-scan set (SYSTEM_CONSTANTS.md). Store only in
+canonical secret-scan set (see the pre-commit hook). Store only in
 `__STACK_ROOT__/.env`; the hook will NOT catch a leak.
 
 """

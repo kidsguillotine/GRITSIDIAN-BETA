@@ -4,7 +4,7 @@
 # Source this file at the top of any script that uses the values below:
 #   source "$(dirname "$0")/constants.sh"
 #
-# Canonical doc: 99_system/SYSTEM_CONSTANTS.md
+# This file IS the canonical source for shared literals. See DOC_STANDARD section 9.
 # Add new constants there AND here simultaneously.
 # C9 in validate_system.sh warns when a script hardcodes a value from this file.
 

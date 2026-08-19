@@ -16,7 +16,7 @@ Build or rebuild them:
 
 The folder is empty on a fresh vault, which is correct: there is nothing to index
 yet. Write some notes first, then run the command. Spec:
-`99_system/REBUILD_MOCS_SPEC.md`.
+`99_system/SCRIPT_SPECS.md`.
 
 Obsidian shows related notes in other ways too: the Backlinks pane, the Graph
 view, and the Smart Connections plugin. See `wiki/Plugins`.

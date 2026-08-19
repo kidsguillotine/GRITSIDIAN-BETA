@@ -103,7 +103,7 @@ WIKILINK_BAD_RE='\[\[[^]!|]*\.md(\.md)*(\|[^]]*)?\]\]'
 # examples may legitimately appear in prose. Trim entries here as the
 # referenced files get content-fixed to wrap examples in backticks. DO NOT add
 # regular content files to this list: wrap examples in backticks instead.
-WIKILINK_WHITELIST='^(_handoff/MIGRATION_LOG\.txt|_handoff/SESSION_HANDOFF_CURRENT\.md|_handoff/handoff_history/.*|_handoff/SESSION_BOOT\.md|_handoff/GOTCHAS\.md|_handoff/archive/.*|99_system/REBUILD_MOCS_SPEC\.md|CLAUDE\.md|_handoff/erosion_audit/.*|99_system/obsilo-memory/knowledge\.md|_handoff/OPEN_DECISIONS\.md|_handoff/IMPORTED_HANDOFFS\.md)$'
+WIKILINK_WHITELIST='^(_handoff/MIGRATION_LOG\.txt|_handoff/SESSION_HANDOFF_CURRENT\.md|_handoff/handoff_history/.*|_handoff/SESSION_BOOT\.md|_handoff/GOTCHAS\.md|_handoff/archive/.*|CLAUDE\.md|_handoff/erosion_audit/.*|99_system/obsilo-memory/knowledge\.md|_handoff/OPEN_DECISIONS\.md|_handoff/IMPORTED_HANDOFFS\.md)$'
 WIKILINK_MD_STAGED=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.md$' | grep -vE "$WIKILINK_WHITELIST" || true)
 
 if [[ -n "$WIKILINK_MD_STAGED" ]]; then

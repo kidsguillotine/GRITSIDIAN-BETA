@@ -20,16 +20,7 @@ update_trigger: Add a row when a scoped-folder doc is created; remove on archive
 | `99_system/API_CATALOG.md` | Local API catalog for /api-lookup | 6 |
 | `99_system/TOKEN_DISCIPLINE.md` | Deterministic-script-over-per-item standing rule | 3 |
 | `99_system/DESIGN_BY_LIMITATION.md` | Design philosophy | 5 |
-| `99_system/MODEL_ROUTING.md` | Which model handles which work | 4 |
-| `99_system/AUTOMATION_ROUTING.md` | Substrate routing (agent vs script vs workflow) | 4 |
-| `99_system/FORMAT_CONTRACT_INVENTORY.md` | Scripts-that-parse-docs inventory | 3 |
-| `99_system/CLAUDE_TOOL_MANIFEST.md` | allowed-tools reference for skills | 4 |
-| `99_system/SUBAGENT_SPECS.md` | Subagent definitions | 4 |
 | `99_system/SCRIPT_REGISTRY.md` | Registry of pipeline scripts | 4 |
-| `99_system/SYSTEM_CONSTANTS.md` | Shared literals (do not hardcode elsewhere) | 3 |
-| `99_system/INTEGRITY_LAYER_SPEC.md` | validate_system.sh check spec | 4 |
-| `99_system/REBUILD_MOCS_SPEC.md` | rebuild_mocs.py spec | 4 |
-| `99_system/DOMAIN_HANDOFF_TEMPLATE.md` | Template for a domain handoff | 5 |
 | `99_system/CAPTURE_QUICKREF.md` | Capture-pipeline quick reference | 5 |
 | `_handoff/SESSION_BOOT.md` | Session-start digest (generated) | 2 |
 | `_handoff/BOOT_DELTA.md` | Delta since prior boot (generated) | 2 |
@@ -42,6 +33,8 @@ update_trigger: Add a row when a scoped-folder doc is created; remove on archive
 | `_handoff/vip_next_session/README.md` | Transient next-session priority bucket | 2 |
 | `_handoff/vip_next_session/SECURITY_FIRES.md` | Open security incidents | 2 |
 | `99_system/VAULT_ARCHITECTURE.md` | What every tracking file is for | 3 |
+| `99_system/AGENTS_AND_TOOLS.md` | Agents, skills, tool choice, inherited rules | 4 |
+| `99_system/SCRIPT_SPECS.md` | Reading validator output; running rebuild_mocs | 4 |
 | `99_system/SYMLINK_REGISTRY.md` | Symlink index (none active) | 4 |
 | `99_system/SUPERSESSION_INDEX.md` | Dead decisions, do not re-apply | 3 |
 | `99_system/SCRIPT_REGISTRY.md` | Roster of shipped scripts, checked by C4 | 4 |

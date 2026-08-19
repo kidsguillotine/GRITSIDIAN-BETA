@@ -113,8 +113,8 @@ Fix: a parsed file has a format contract. Change the file and the parser in the
 same commit.
 Defense: DOCUMENTARY plus consistency. Section 4 of
 `99_system/DOC_STANDARD.md` lists every format contract, and this starter uses
-one plain delimiter everywhere: a colon. `99_system/FORMAT_CONTRACT_INVENTORY.md`
-lists which script parses which file.
+one plain delimiter everywhere: a colon. Section 8 of
+`99_system/DOC_STANDARD.md` lists which script parses which file.
 
 ### G07: count the status field, not the heading (2026-08-19)
 Symptom: two handoff files disagreed on how many imports were pending. One said
@@ -350,6 +350,18 @@ Fix: the script now compares the repository root against the vault path and
 refuses to read history unless they match. Run `git init` inside the vault.
 Defense: MECHANICAL. Present in `gen_session_boot.sh`. Also a warning about
 generated files generally: check what a generator read before you believe it.
+
+### G26: an unquoted colon in a generated title breaks the properties block (2026-08-19)
+Symptom: Obsidian showed a properties error on `SESSION_BOOT.md`, and a YAML parse
+of the frontmatter failed with "mapping values are not allowed here". The file
+looked fine to read.
+Cause: the generator wrote `title: Session Boot: fast-load orientation`. In YAML a
+second colon in an unquoted value ends the key, so the line is invalid. Because a
+script wrote it, every regeneration reintroduced the fault.
+Fix: quote any frontmatter value that contains a colon. Fixed at the source in
+`gen_session_boot.sh` and `generate_handoff.sh`, not in the output file.
+Defense: DOCUMENTARY, with one caution worth remembering: fixing a generated file
+instead of its generator lasts until the next run. Fix the writer. Related to G05.
 
 ## Template for a new entry
 
