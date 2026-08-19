@@ -1,0 +1,57 @@
+# ============================================================================
+# Claudian Starter .gitignore
+# Each block cites the gotcha it defends against. See _handoff/GOTCHAS.md.
+# Get this file right BEFORE you enable the backup cron: the cron commits
+# everything not listed here. See _handoff/SAFETY_POLICY.md part 2.
+# ============================================================================
+
+# --- Secrets. Never commit a credential. -----------------------------------
+.env
+*.env
+!.env.example
+
+# G31: Obsidian plugins store API keys in plaintext inside their own
+# data.json. Copilot stored an Anthropic key this way. Ignore ALL plugin
+# data, not just one plugin. If you want to share your plugin list, commit
+# .obsidian/community-plugins.json (a plain name list, no secrets).
+.obsidian/plugins/
+.obsidian/plugins/*/data.json
+
+# G55: an API key placed in a plugin's environment-variables setting is
+# injected into the spawned CLI and silently overrides subscription auth.
+# That setting lives in this file. Keep it out of git.
+.claudian/claudian-settings.json
+
+# --- Private content. Routed here, never committed. -------------------------
+# See wiki/Sensitivity and Security.
+_sensitive/
+20_personal/finance/
+20_personal/_for_review/
+
+# --- Trash and machine caches ----------------------------------------------
+.trash/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# G11: Smart Connections writes .ajson index files that reach 80k+ tokens.
+# They are machine cache, not content. Never commit them, never read them.
+.smart-env/
+
+# --- Per-machine Obsidian state (changes constantly, not useful shared) -----
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# --- Machine-local logs and session state ----------------------------------
+.claudian/logs/
+.claudian/sessions/
+_handoff/*.jsonl
+
+# --- Volatile generated files ----------------------------------------------
+# These regenerate at every session start and end, so tracking them makes a
+# noisy diff on every commit. They hold nothing you cannot rebuild.
+# Uncomment to silence the churn. Leaving them tracked is also fine and gives
+# you a history of session state.
+# _handoff/SESSION_BOOT.md
+# _handoff/BOOT_DELTA.md

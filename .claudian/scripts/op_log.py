@@ -1,0 +1,1 @@
+/home/damm/Projects/gritsidian/scripts/op_log.py

@@ -1,0 +1,1 @@
+/home/damm/Projects/gritsidian/scripts/validate_frontmatter.py

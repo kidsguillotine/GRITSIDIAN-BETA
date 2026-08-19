@@ -1,0 +1,1 @@
+/home/damm/Projects/gritsidian/scripts/vault_agent.py

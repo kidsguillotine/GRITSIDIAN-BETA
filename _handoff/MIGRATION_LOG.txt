@@ -1,0 +1,5 @@
+Claudian Starter: Migration Log
+One line per confirmed structural operation (move/trash/extract/merge).
+Format: YYYY-MM-DD: what happened (source -> dest).
+
+2026-08-19: removed empty duplicate folder 00_inbox/SCRAPS (case-only collision with 00_inbox/scraps; unsafe on Windows and macOS). No files affected.
