@@ -23,8 +23,23 @@
 
 set -uo pipefail
 
-VAULT="__VAULT_ROOT__"
-PROJECT="__STACK_ROOT__"
+VAULT="${VAULT:-__VAULT_ROOT__}"
+
+# Fail loud if setup.sh was never run. Without this a script silently creates a
+# folder literally named __VAULT_ROOT__ and writes into it (see GOTCHAS G27).
+case "$VAULT" in
+  *__VAULT_ROOT__*)
+    echo "FATAL: vault path is still the setup placeholder." >&2
+    echo "  Run ./setup.sh, or pass VAULT=/path/to/vault explicitly." >&2
+    exit 2 ;;
+esac
+[ -d "$VAULT" ] || { echo "FATAL: vault path does not exist: $VAULT" >&2; exit 2; }
+# Optional second repo (a product or stack checkout). Most installs have none.
+# Left as the placeholder or pointed at a missing path, every git call against it
+# is skipped rather than printing a fatal error.
+PROJECT="${PROJECT:-__STACK_ROOT__}"
+case "$PROJECT" in *__STACK_ROOT__*) PROJECT="" ;; esac
+[ -n "$PROJECT" ] && [ ! -d "$PROJECT" ] && PROJECT=""
 OUT="$VAULT/_handoff/SESSION_HANDOFF_CURRENT.md"
 TIMESTAMP=$(date +%Y-%m-%dT%H:%M)
 DATE=$(date +%Y-%m-%d)

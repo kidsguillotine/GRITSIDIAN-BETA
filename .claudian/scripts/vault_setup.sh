@@ -11,7 +11,17 @@
 
 set -e
 
-VAULT="__VAULT_ROOT__"
+VAULT="${VAULT:-__VAULT_ROOT__}"
+
+# Fail loud if setup.sh was never run. Without this a script silently creates a
+# folder literally named __VAULT_ROOT__ and writes into it (see GOTCHAS G27).
+case "$VAULT" in
+  *__VAULT_ROOT__*)
+    echo "FATAL: vault path is still the setup placeholder." >&2
+    echo "  Run ./setup.sh, or pass VAULT=/path/to/vault explicitly." >&2
+    exit 2 ;;
+esac
+[ -d "$VAULT" ] || { echo "FATAL: vault path does not exist: $VAULT" >&2; exit 2; }
 GRITSIDIAN_SCRIPTS="__SCRIPTS_ROOT__/scripts"
 
 # Canonical scripts that live in your-scripts/scripts/ and symlink into vault.

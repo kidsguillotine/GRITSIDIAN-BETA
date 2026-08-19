@@ -1,0 +1,21 @@
+# folder_desc.yaml: descriptions of the vault top-level folders.
+# Sourced by .claudian/scripts/gen_vo_memory.sh to build the folder table.
+# Add a row when you create a top-level folder; remove it when you delete one.
+# Keep this in step with 99_system/FOLDER_SCHEMA.md.
+
+00_inbox: "Raw capture. Unsorted notes land here and get routed out."
+10_active: "Current work. Routines, todos, and the state of what you are doing now."
+20_personal: "Personal life. Health, family, home, and personal records."
+30_career: "Career. Resumes, work history, and professional records."
+40_technical: "Technical notes. Code, systems, and learning."
+50_notes: "General notes and ideas that do not belong to one domain."
+60_creative: "Creative work. Writing, music, and art."
+70_manual_review: "Flagged by the pipeline for a human decision. The automation abstained."
+80_archive: "Old or superseded content, kept for reference. Never auto-route here."
+99_system: "System documentation. Format specs and the architecture map."
+attachments: "Images, PDFs, and other media embedded in notes."
+crm: "One note per person. Optional; delete the folder if unused."
+wiki: "The human-facing guide to this system, in plain English."
+_MOCs: "Maps of Content. Generated index notes. Do not hand-edit."
+_handoff: "Session state, decisions, logs, and incident records."
+_templates: "Note templates for the Obsidian Templates and Templater plugins."

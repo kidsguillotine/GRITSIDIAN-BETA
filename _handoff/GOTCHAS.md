@@ -363,6 +363,33 @@ Fix: quote any frontmatter value that contains a colon. Fixed at the source in
 Defense: DOCUMENTARY, with one caution worth remembering: fixing a generated file
 instead of its generator lasts until the next run. Fix the writer. Related to G05.
 
+### G27: an unreplaced path placeholder creates a real folder (2026-08-19)
+Symptom: a directory literally named `__VAULT_ROOT__` appeared in the vault, with a
+generated handoff file inside it. Nothing errored.
+Cause: several scripts hardcoded `VAULT="__VAULT_ROOT__"`, the token that
+`setup.sh` is supposed to replace. Run before setup, or run with the token still in
+place, the script treated the literal string as a path and wrote into it. Shell
+redirection and `mkdir -p` both create whatever path they are given.
+Fix: every script that sets a vault path now accepts an override and refuses to run
+while the placeholder is present:
+`case "$VAULT" in *__VAULT_ROOT__*) echo FATAL; exit 2 ;; esac`
+Defense: MECHANICAL, in `generate_handoff.sh`, `session_close.sh`, `pre-sweep.sh`,
+`vault_setup.sh`, and `validate_system.sh`. Generalizes to: a placeholder that is
+also a valid relative path will silently become one. Fail on the placeholder rather
+than trusting that setup ran.
+
+### G28: an optional layer must skip, not fail (2026-08-19)
+Symptom: session close ended with exit code 1 and printed errors, on a correctly
+installed fresh vault. Nothing was actually wrong.
+Cause: the handoff chain called a generator for an optional memory layer. Missing
+templates and a missing config file were treated as errors rather than as "this
+install does not use that layer".
+Fix: the generator now skips a missing template and returns success. The config
+file it genuinely needs (`folder_desc.yaml`) is shipped.
+Defense: MECHANICAL. Also a design rule: an optional component that fails loudly
+teaches the user to ignore errors, which is worse than the missing feature. Reserve
+non-zero exits for things that are actually broken.
+
 ## Template for a new entry
 
 ```

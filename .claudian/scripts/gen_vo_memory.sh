@@ -147,9 +147,10 @@ process_template() {
   local output="$2"
 
   if [ ! -f "$template" ]; then
-    echo "[gen_vo_memory] ERROR: template not found: $template" >&2
-    EXIT_CODE=1
-    return
+    # Optional layer. No template means this install does not use VO memory, which
+    # is the normal case for a fresh vault. Skip without failing.
+    echo "[gen_vo_memory] skip: no template at $template (optional, not configured)"
+    return 0
   fi
 
   local resolved
